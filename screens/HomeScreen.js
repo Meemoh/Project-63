@@ -8,12 +8,38 @@ import {
   Image,
 } from 'react-native';
 import { Header } from 'react-native-elements';
+import * as Font from 'expo-font';
 
 export default class HomeScreen extends React.Component {
   constructor() {
     super();
-    this.state = { word: '', definition: '', phonetics: '' };
+    this.state = {
+       word: '', definition: '', 
+       phonetics: '',
+       fontsLoaded: false,
+       };
+       
   }
+ 
+
+
+async loadFonts() {
+  await Font.loadAsync({
+    // Load a font `Montserrat` from a static resource
+    //Montserrat: require('./assets/fonts/Montserrat.ttf'),
+
+    // Any string can be used as the fontFamily name. Here we use an object to provide more control
+    'FrenchScriptMT': {
+      uri: require('../assets/fonts/FrenchScriptMT.ttf'),
+      display: Font.FontDisplay.FALLBACK,
+    },
+  });
+  this.setState({ fontsLoaded: true });
+}
+
+componentDidMount() {
+  this.loadFonts();
+}
   getWord = (word) => {
     var url = 'https://api.dictionaryapi.dev/api/v2/entries/en/' + word;
     return fetch(url)
@@ -42,7 +68,7 @@ export default class HomeScreen extends React.Component {
           centerComponent={{
             text: 'Pocket Dictionary',
 
-            style: { color: 'white', fontSize: 30, fontFamily: 'French Script MT' },
+            style: { color: 'white', fontSize: 30, fontFamily : 'FrenchScriptMT' },
           }}
         />
 
@@ -85,8 +111,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     borderWidth: 4,
     borderColor: 'white',
-    outline: 'none',
-  },
+    },
   searchButton: {
     width: '40%',
     height: 50,
